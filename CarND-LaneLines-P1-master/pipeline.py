@@ -139,4 +139,3 @@ def process_video(video_file):
 	cv2.destroyAllWindows()
 
 process_video(filename)
-#process_video("C:\\Users\\petrush\\Documents\\Python Scripts\\CarND-LaneLines-P1-master\\test_videos\\solidYellowLeft.mp4")
