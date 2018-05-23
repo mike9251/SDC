@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+#from collections import deque
 import cv2
 import sys
 
@@ -9,6 +10,8 @@ t = 0
 beta = 0.98
 avg_right_line = 0
 avg_left_line = 0
+
+stack_r = []
 
 def region_of_interest(img, vertices):
     """
@@ -90,8 +93,26 @@ def lane_lines(image, lines):
     global beta
     global avg_right_line
     global avg_left_line
+    global stack_r
+    avg_l = 0
+    avg_r = 0
 
-    if t == 0:
+    if len(stack_r) >= 30:
+    	print("Pop an element from stack")
+    	stack_r.pop()
+
+    stack_r.append((left_lane, right_lane))
+
+    for left, right in stack_r:
+    	avg_l = avg_l + left
+    	avg_r = avg_r + right
+    avg_l = avg_l / len(stack_r)
+    avg_r = avg_r / len(stack_r)
+    avg_left_line = avg_l
+    avg_right_line = avg_r
+
+
+    """if t == 0:
     	avg_left_line = left_lane
     	avg_right_line = right_lane
     	t = t + 1
@@ -100,7 +121,7 @@ def lane_lines(image, lines):
         avg_right_line = beta * avg_right_line + (1 - beta) * right_lane
         left_lane = avg_left_line
         right_lane = avg_right_line
-        t = t + 1
+        t = t + 1"""
 
     y1 = image.shape[0]
     y2 = int(y1 * 0.6)
@@ -126,11 +147,11 @@ def pipeline(img):
     
     blured_img = cv2.GaussianBlur(gray_img, (7, 7), 0)
     
-    edges = cv2.Canny(blured_img, 100, 200)
+    edges = cv2.Canny(blured_img, 150, 200)
     
     roi_img = select_region(edges)
 
-    lines_per_image = cv2.HoughLinesP(roi_img, 8, np.pi/180, 20, np.array([]), minLineLength=20, maxLineGap=100)
+    lines_per_image = cv2.HoughLinesP(roi_img, 2, np.pi/180, 35, np.array([]), minLineLength=10, maxLineGap=100)
     
     lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image))
     
