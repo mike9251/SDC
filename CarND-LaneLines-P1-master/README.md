@@ -29,7 +29,7 @@ Writeup
  - separate found lines on left and right lines, calculate an average left/right lines
  - draw lane lines
  
- 
+ *Usage:* python pipeline.py test_videos\solidYellowLeft.mp4
 
 *2. Identify any shortcomings*
 
