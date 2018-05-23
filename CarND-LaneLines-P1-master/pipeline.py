@@ -7,7 +7,7 @@ import sys
 
 # exponential moving average params
 t = 0
-beta = 0.98
+beta = 0.75
 avg_right_line = 0
 avg_left_line = 0
 
@@ -97,7 +97,7 @@ def lane_lines(image, lines):
     avg_l = 0
     avg_r = 0
 
-    if len(stack_r) >= 30:
+    """if len(stack_r) >= 30:
     	print("Pop an element from stack")
     	stack_r.pop()
 
@@ -109,10 +109,10 @@ def lane_lines(image, lines):
     avg_l = avg_l / len(stack_r)
     avg_r = avg_r / len(stack_r)
     avg_left_line = avg_l
-    avg_right_line = avg_r
+    avg_right_line = avg_r"""
 
 
-    """if t == 0:
+    if t == 0:
     	avg_left_line = left_lane
     	avg_right_line = right_lane
     	t = t + 1
@@ -121,7 +121,7 @@ def lane_lines(image, lines):
         avg_right_line = beta * avg_right_line + (1 - beta) * right_lane
         left_lane = avg_left_line
         right_lane = avg_right_line
-        t = t + 1"""
+        t = t + 1
 
     y1 = image.shape[0]
     y2 = int(y1 * 0.6)
@@ -141,21 +141,30 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=20):
     # image1 and image2 must be the same shape.
     return cv2.addWeighted(image, 1.0, line_image, 0.95, 0.0)
 
+def extract_y_w(img):
+	hls_img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+	low = np.uint8([15, 38, 115])
+	hight = np.uint8([35, 204, 255])
+	y_mask = cv2.inRange(hls_img, low, hight)
+	low = np.uint8([0, 200, 0])
+	hight = np.uint8([180, 255, 255])
+	w_mask = cv2.inRange(hls_img, low, hight)
+	y_w_mask = cv2.bitwise_or(y_mask, w_mask)
+
+	return cv2.bitwise_and(img, img, mask=y_w_mask)
+
 def pipeline(img):
 
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    blured_img = cv2.GaussianBlur(gray_img, (7, 7), 0)
-    
-    edges = cv2.Canny(blured_img, 150, 200)
-    
-    roi_img = select_region(edges)
+	hls_img = extract_y_w(img)
 
-    lines_per_image = cv2.HoughLinesP(roi_img, 2, np.pi/180, 35, np.array([]), minLineLength=10, maxLineGap=100)
-    
-    lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image))
-    
-    return lane_image
+	gray_img = cv2.cvtColor(hls_img, cv2.COLOR_BGR2GRAY)
+	blured_img = cv2.GaussianBlur(gray_img, (7, 7), 0)
+	edges = cv2.Canny(blured_img, 150, 200)
+	roi_img = select_region(edges)
+	lines_per_image = cv2.HoughLinesP(roi_img, 2, np.pi/180, 35, np.array([]), minLineLength=10, maxLineGap=100)
+	lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image))
+
+	return lane_image
 
 
 def get_args(name='default', video_file="None"):
