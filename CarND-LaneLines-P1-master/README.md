@@ -19,19 +19,26 @@ Writeup
 ---
 
 
-1. Pipeline
+*1. Pipeline*
  - load an image
- - convert the input image to gray scale
- - perform filtering with Gaussian filter
- - find edges with Canny edge detector
+ - convert the input image into a gray scale one
+ - perform filtering with the Gaussian filter
+ - find edges with the Canny edge detector
  - define a region of interest (a region where we'll look for lane lines)
  - find lines from the edge points with the Hough algorithm
  - separate found lines on left and right lines, calculate an average left/right lines
  - draw lane lines
+ 
+ 
 
-2. Identify any shortcomings
+*2. Identify any shortcomings*
 
-3. Suggest possible improvements
+Current implementation suffers to accurately identify curved lane lines.
+
+*3. Suggest possible improvements*
+
+One possible way to improve accuracy of lane line detection is to apply extraction masks (white, yellow) to the input image.
+To increase accuracy of curved line detection try to apply some different methods for outlier lane line rejection.
 
 We encourage using images in your writeup to demonstrate how your pipeline works.  
 
