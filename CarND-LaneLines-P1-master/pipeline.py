@@ -49,21 +49,21 @@ def average_lines(lines):
     left_line_length = []
     right_line = []
     right_line_length = []
-    
-    for line in lines:
-        for x1, y1, x2, y2 in line:
-            if x1 == x2:
-                continue
-            slope = (y2 - y1) / (x2 - x1)
-            bias = y2 - slope * x2
-            length = np.sqrt((y2 - y1)**2 + (x2 - x1)**2)
-            
-            if slope >= 0:
-                right_line.append((slope, bias))
-                right_line_length.append(length)
-            else:
-                left_line.append((slope, bias))
-                left_line_length.append(length)
+    for t in range(len(lines)):
+    	for line in lines[t]:
+    		for x1, y1, x2, y2 in line:
+    			if x1 == x2:
+    				continue
+    			slope = (y2 - y1) / (x2 - x1)
+    			bias = y2 - slope * x2
+    			length = np.sqrt((y2 - y1)**2 + (x2 - x1)**2)
+
+    			if slope >= 0:
+    				right_line.append((slope, bias))
+    				right_line_length.append(length)
+    			else:
+    				left_line.append((slope, bias))
+    				left_line_length.append(length)
     
     left_lane = np.dot(left_line_length, left_line) / np.sum(left_line_length) if len(left_line_length) > 0 else None
     right_lane = np.dot(right_line_length, right_line) / np.sum(right_line_length) if len(right_line_length) > 0 else None
@@ -80,9 +80,21 @@ def make_line_points(y1, y2, line):
     
     return ((x1, y1), (x2, y2))
 
-def lane_lines(image, lines):
-    left_lane, right_lane = average_lines(lines)
+def lane_lines(image, lines, t, beta, avg_left_line, avg_right_line, avg_lines_per_image):
+    left_lane, right_lane = average_lines(avg_lines_per_image)#lines)
     
+    """if len(t) == 0:
+    	avg_left_line.append(left_lane)
+    	avg_right_line.append(right_lane)
+    	#print(avg_left_line)
+    	t.append(len(t) + 1)
+    elif len(t) >= 1:
+        avg_left_line.append(beta * avg_left_line[-1] + (1 - beta) * left_lane)
+        avg_right_line.append(beta * avg_right_line[-1] + (1 - beta) * right_lane)
+        left_lane = avg_left_line[-1]
+        right_lane = avg_right_line[-1]
+        t.append(len(t) + 1)"""
+
     y1 = image.shape[0]
     y2 = int(y1 * 0.6)
     
@@ -101,7 +113,7 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=20):
     # image1 and image2 must be the same shape.
     return cv2.addWeighted(image, 1.0, line_image, 0.95, 0.0)
 
-def pipeline(img):
+def pipeline(img, t, beta, avg_left_line, avg_right_line, avg_lines_per_image):
 
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
@@ -112,8 +124,11 @@ def pipeline(img):
     roi_img = select_region(edges)
 
     lines_per_image = cv2.HoughLinesP(roi_img, 1, np.pi/180, 20, np.array([]), minLineLength=20, maxLineGap=300)
+    #print("shape: ", lines_per_image.shape, lines_per_image)
+
+    avg_lines_per_image.append(lines_per_image)
     
-    lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image))
+    lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image, t, beta, avg_left_line, avg_right_line, avg_lines_per_image))
     
     return lane_image
 
@@ -124,13 +139,20 @@ def get_args(name='default', video_file="None"):
 filename = get_args(*sys.argv)
 
 def process_video(video_file):
+	t = []
+	beta = 0.9
+	avg_right_line = []
+	avg_left_line = []
+	avg_lines_per_image = []
+
 	cap = cv2.VideoCapture(video_file)
 	cv2.namedWindow("frame")
 	while cap.isOpened():
 		ret, frame = cap.read()
 		if not ret:
 			break
-		img = pipeline(frame)
+		#print(avg_left_line, avg_right_line)
+		img = pipeline(frame, t, beta, avg_left_line, avg_right_line, avg_lines_per_image)
 		cv2.imshow("frame", img)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
