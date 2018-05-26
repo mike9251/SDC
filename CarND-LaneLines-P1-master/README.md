@@ -17,11 +17,13 @@ To meet specifications in the project, take a look at the requirements in the [p
 
 Writeup
 ---
-
+The first task of the Self-Driving Car course is to create a simple lane line detector. The implemented script works with video only
 
 *1. Pipeline*
  - load an image
- - convert the input image into a gray scale one
+ <img src="result/input_img.JPG" width="480" alt="Combined Image" />
+ - convert it into HSL color space, extract white and yellow lines  - IMPORTANT - really helps in challenge video case
+ - convert the result of the previous stage into a gray scale
  - perform filtering with the Gaussian filter
  - find edges with the Canny edge detector
  - define a region of interest (a region where we'll look for lane lines)
@@ -37,12 +39,8 @@ Current implementation suffers to accurately identify curved lane lines.
 
 *3. Suggest possible improvements*
 
-One possible way to improve accuracy of lane line detection is to apply extraction masks (white, yellow) to the input image.
-To increase accuracy of curved line detection try to apply some different methods for outlier lane line rejection.
+-One possible way to improve accuracy of lane line detection is to apply extraction masks (white, yellow) to the input image - Done.
+This method really helps, detector more accurately finds lines.
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+- To increase accuracy of curved line detection try to apply some different methods for outlier lane line rejection.
 
