@@ -8,8 +8,8 @@ import sys
 # exponential moving average params
 t = 0
 beta = 0.75
-avg_right_line = 0
-avg_left_line = 0
+avg_right_line = None
+avg_left_line = None
 
 stack_r = []
 
@@ -87,41 +87,35 @@ def make_line_points(y1, y2, line):
     
     return ((x1, y1), (x2, y2))
 
-def lane_lines(image, lines):
+
+
+def moving_average(lane):
+	global t
+	global beta
+	global avg_right_line
+	global avg_left_line
+
+	left_lane, right_lane = lane
+
+	if t == 0:
+		avg_left_line = left_lane
+		avg_right_line = right_lane
+
+	avg_left_line = beta * avg_left_line + (1 - beta) * left_lane
+	avg_right_line = beta * avg_right_line + (1 - beta) * right_lane
+	left_lane = avg_left_line
+	right_lane = avg_right_line
+	t = t + 1
+
+	return left_lane, right_lane
+
+
+
+def lane_lines(image, lines, bUseExpMovAvg=False):
     left_lane, right_lane = average_lines(lines)
-    global t
-    global beta
-    global avg_right_line
-    global avg_left_line
-    global stack_r
-    avg_l = 0
-    avg_r = 0
 
-    """if len(stack_r) >= 30:
-    	print("Pop an element from stack")
-    	stack_r.pop()
-
-    stack_r.append((left_lane, right_lane))
-
-    for left, right in stack_r:
-    	avg_l = avg_l + left
-    	avg_r = avg_r + right
-    avg_l = avg_l / len(stack_r)
-    avg_r = avg_r / len(stack_r)
-    avg_left_line = avg_l
-    avg_right_line = avg_r"""
-
-
-    if t == 0:
-    	avg_left_line = left_lane
-    	avg_right_line = right_lane
-    	t = t + 1
-    elif t >= 1:
-        avg_left_line = beta * avg_left_line + (1 - beta) * left_lane
-        avg_right_line = beta * avg_right_line + (1 - beta) * right_lane
-        left_lane = avg_left_line
-        right_lane = avg_right_line
-        t = t + 1
+    if bUseExpMovAvg == True:
+    	left_lane, right_lane = moving_average((left_lane, right_lane))
 
     y1 = image.shape[0]
     y2 = int(y1 * 0.6)
@@ -141,7 +135,7 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=20):
     # image1 and image2 must be the same shape.
     return cv2.addWeighted(image, 1.0, line_image, 0.95, 0.0)
 
-def extract_y_w(img):
+def extract_yellow_white(img):
 	hls_img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
 	low = np.uint8([15, 38, 115])
 	hight = np.uint8([35, 204, 255])
@@ -155,14 +149,14 @@ def extract_y_w(img):
 
 def pipeline(img):
 
-	hls_img = extract_y_w(img)
+	hls_img = extract_yellow_white(img)
 
 	gray_img = cv2.cvtColor(hls_img, cv2.COLOR_BGR2GRAY)
 	blured_img = cv2.GaussianBlur(gray_img, (7, 7), 0)
 	edges = cv2.Canny(blured_img, 150, 200)
 	roi_img = select_region(edges)
 	lines_per_image = cv2.HoughLinesP(roi_img, 2, np.pi/180, 35, np.array([]), minLineLength=10, maxLineGap=100)
-	lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image))
+	lane_image = draw_lane_lines(img, lane_lines(img, lines_per_image, True))
 
 	return lane_image
 
@@ -173,7 +167,7 @@ def get_args(name='default', video_file="None"):
 filename = get_args(*sys.argv)
 
 def process_video(video_file):
-
+	#out = cv2.VideoWriter('outpy.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
 	cap = cv2.VideoCapture(video_file)
 	cv2.namedWindow("frame")
 	while cap.isOpened():
@@ -181,6 +175,7 @@ def process_video(video_file):
 		if not ret:
 			break
 		img = pipeline(frame)
+		#out.write(img)
 		cv2.imshow("frame", img)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
