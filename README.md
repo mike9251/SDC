@@ -5,3 +5,9 @@
  - Hough transform
  
 2. Road Signs Detector (http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset) (https://github.com/ndrplz/self-driving-car/blob/master/project_2_traffic_sign_classifier/Traffic_Sign_Classifier.ipynb) (https://medium.com/@jeremyeshannon/udacity-self-driving-car-nanodegree-project-2-traffic-sign-classifier-f52d33d4be9f) (https://medium.com/@mrhwick/traffic-sign-classification-with-tensorflow-524caca13b2b)
+
+3. Behavior Clonning
+https://medium.com/udacity/udacity-self-driving-car-nanodegree-project-3-behavioral-cloning-446461b7c7f9
+https://towardsdatascience.com/cnn-model-comparison-in-udacitys-driving-simulator-9261de09b45
+https://towardsdatascience.com/introduction-to-udacity-self-driving-car-simulator-4d78198d301d - how to set up the simulator
+https://github.com/naokishibuya/car-behavioral-cloning
