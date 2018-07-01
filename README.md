@@ -10,4 +10,5 @@
 https://medium.com/udacity/udacity-self-driving-car-nanodegree-project-3-behavioral-cloning-446461b7c7f9  
 https://towardsdatascience.com/cnn-model-comparison-in-udacitys-driving-simulator-9261de09b45  
 https://towardsdatascience.com/introduction-to-udacity-self-driving-car-simulator-4d78198d301d - how to set up the simulator  
-https://github.com/naokishibuya/car-behavioral-cloning
+https://github.com/naokishibuya/car-behavioral-cloning  
+https://github.com/ndrplz/self-driving-car/tree/master/project_3_behavioral_cloning
