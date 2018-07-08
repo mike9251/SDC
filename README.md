@@ -13,3 +13,7 @@ https://towardsdatascience.com/introduction-to-udacity-self-driving-car-simulato
 https://github.com/naokishibuya/car-behavioral-cloning  
 https://github.com/ndrplz/self-driving-car/tree/master/project_3_behavioral_cloning  
 https://medium.com/deep-learning-turkey/behavioral-cloning-udacity-self-driving-car-project-generator-bottleneck-problem-in-using-gpu-182ee407dbc5
+
+4. Advanced Lane Finding  
+https://github.com/ndrplz/self-driving-car/tree/master/project_4_advanced_lane_finding  
+https://github.com/rkipp1210/pydata-berlin-2017
