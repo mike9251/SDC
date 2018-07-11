@@ -16,4 +16,5 @@ https://medium.com/deep-learning-turkey/behavioral-cloning-udacity-self-driving-
 
 4. Advanced Lane Finding  
 https://github.com/ndrplz/self-driving-car/tree/master/project_4_advanced_lane_finding  
-https://github.com/rkipp1210/pydata-berlin-2017
+https://github.com/rkipp1210/pydata-berlin-2017  
+https://github.com/lfiaschi/udacity-advanced-lane-finding-project
