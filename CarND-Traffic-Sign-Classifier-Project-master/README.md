@@ -120,7 +120,7 @@ Ahead only  =  99.932 % <br>
 Dangerous curve to the left  =  0.029 % <br>
 Go straight or right  =  0.016 % <br>
 Turn right ahead  =  0.012 % <br>
-Right-of-way at the next intersection  =  0.009 % <br><br><br><br><br>
+Right-of-way at the next intersection  =  0.009 % <br><br><br><br><br><br>
 
 <img src="results/pred_2.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 No passing  =  90.162 % <br>
