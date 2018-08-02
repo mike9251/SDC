@@ -24,29 +24,29 @@ train_df.head()
 ```
 The train data set looks like:
 <div class="imgcap">
- <img src="/results/tr_data.JPG" width="480" alt="Combined Image" />
+ <img src="results/tr_data.JPG" width="480" alt="Combined Image" />
 </div>
 It contains 39209 examples of 43 classes.  
 
 Let's look at a histogramm of class distribution:
 <div class="imgcap">
- <img src="/results/traffic-sign-classifier/tr_hist.JPG" width="480" alt="Combined Image" />
+ <img src="results/tr_hist.JPG" width="480" alt="Combined Image" />
 </div>
 It is clear that the data is unbalanced - some classes have way more examples than other.  
 
 Now let's look at the test data set histogramm (test data set contsists of 12630 examples):
 <div class="imgcap">
- <img src="/results/traffic-sign-classifier/test_hist.JPG" width="480" alt="Combined Image" />
+ <img src="results/test_hist.JPG" width="480" alt="Combined Image" />
 </div>
 Compare two distributions:
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/tr_test_hist.JPG" width="480" alt="Combined Image" />
+ <img src="results/tr_test_hist.JPG" width="480" alt="Combined Image" />
 </div>
 We see that the distributions are almost identical (in percentage of presence) so we may assume that unbalance of the data won't affect prediction accuracy on the test set.
 
 Let's see at some examples from the train set. Also print corresponding labels and image size:
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/tr_data_img.JPG" width="640" alt="Combined Image" />
+ <img src="results/tr_data_img.JPG" width="640" alt="Combined Image" />
 </div>
 So the images have different resolution. I will resize them to 32x32x1 when doing preprocessing.
 
@@ -54,7 +54,7 @@ So the images have different resolution. I will resize them to 32x32x1 when doin
 
 I used a model from a <a href="http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf"> Pierre Sermanet and Yann LeCun paper</a>.
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/model.JPG" width="640" alt="Combined Image" />
+ <img src="results/model.JPG" width="640" alt="Combined Image" />
 </div>
 The input is processed in a feedforward manner through two stage of convolutions and subsampling, and finally classified with a linear classifier. The output of the 1st stage is also fed directly to the classifier as higher-resolution features. ReLU activation function was used. I used Dropout technique after first and second convolutions as regularization and <a href="https://mike9251.github.io/2017/11/07/update-rules/">Adam</a> optimizer. Also I used exponentially decayed learning rate.
 
@@ -100,22 +100,22 @@ def preprocess(X, hist=False, normalize=False):
 ```
 A preproccessed example looks like:
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/preproccessed_example.JPG" width="240" alt="Combined Image" />
+ <img src="results/preproccessed_example.JPG" width="240" alt="Combined Image" />
 </div>
 
 After 50 epoches of training I obtained accuracy on the training data set = 0.995 and on the validation data set = 0.983. The model achieves 0.929 accuracy on the test data set.
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/accuracy_tr_val.JPG" width="640" alt="Combined Image" />
+ <img src="results/accuracy_tr_val.JPG" width="640" alt="Combined Image" />
 </div>
 
 **Test a Model on New Images**
 
 Now I'm going to use the model to predict classes of the images from the Internet. Preprocess them and put labels:
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/new_imgs.JPG" width="480" alt="Combined Image" />
+ <img src="results/new_imgs.JPG" width="480" alt="Combined Image" />
 </div>
 Print 5 best predictions for each image:  
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_1.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_1.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Ahead only  =  99.932 %
 Dangerous curve to the left  =  0.029 %
@@ -125,7 +125,7 @@ Right-of-way at the next intersection  =  0.009 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_2.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_2.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 No passing  =  90.162 %
 End of no passing  =  9.531 %
@@ -135,7 +135,7 @@ Ahead only  =  0.003 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_3.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_3.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Speed limit (60km/h)  =  49.536 %
 Speed limit (20km/h)  =  23.520 %
@@ -145,7 +145,7 @@ Priority road  =  2.949 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_4.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_4.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Right-of-way at the next intersection  =  27.180 %
 Road narrows on the right  =  24.960 %
@@ -155,7 +155,7 @@ Children crossing  =  9.702 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_5.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_5.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Children crossing  =  42.562 %
 Speed limit (50km/h)  =  15.265 %
@@ -165,7 +165,7 @@ Speed limit (80km/h)  =  4.657 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_6.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_6.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Turn left ahead  =  99.488 %
 Keep right  =  0.510 %
@@ -175,7 +175,7 @@ Road narrows on the right  =  0.0001 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_7.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_7.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Roundabout mandatory  =  77.899 %
 Speed limit (100km/h)  =  19.316 %
@@ -185,7 +185,7 @@ Speed limit (80km/h)  =  0.132 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_8.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_8.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Speed limit (100km/h)  =  55.397 %
 Speed limit (120km/h)  =  13.719 %
@@ -195,7 +195,7 @@ Right-of-way at the next intersection  =  3.761 %
 ```
 <br><br><br><br>
 
-<img src="/assets/self-driving-cars/traffic-sign-classifier/pred_9.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
+<img src="results/pred_9.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
 Speed limit (50km/h)  =  47.604 %
 Speed limit (30km/h)  =  27.445 %
