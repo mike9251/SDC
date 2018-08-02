@@ -85,7 +85,7 @@ Extract white and yellow lines with corresponding masks:
  - draw lane lines
  <img src="result/lane_line.JPG" width="480" alt="Combined Image" />
  
- *Usage:* python pipeline.py test_videos\solidYellowLeft.mp4
+ **Usage:** *python pipeline.py test_videos\solidYellowLeft.mp4*
 
 *2. Identify any shortcomings*
 
