@@ -115,7 +115,10 @@ Now I'm going to use the model to predict classes of the images from the Interne
  <img src="results/new_imgs.JPG" width="480" alt="Combined Image" />
 </div>
 
-**Print 5 best predictions for each image:**  
+
+**Print 5 best predictions for each image:**
+
+
 <img src="results/pred_1.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 Ahead only  =  99.932 % <br>
 Dangerous curve to the left  =  0.029 % <br>
