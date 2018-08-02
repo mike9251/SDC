@@ -127,69 +127,56 @@ No passing  =  90.162 % <br>
 End of no passing  =  9.531 % <br>
 No passing for vehicles over 3.5 metric tons  =  0.280 % <br>
 Vehicles over 3.5 metric tons prohibited  =  0.015 % <br>
-Ahead only  =  0.003 % <br><br><br><br>
+Ahead only  =  0.003 % <br><br><br><br><br><br>
 
 <img src="results/pred_3.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 Speed limit (60km/h)  =  49.536 % <br>
 Speed limit (20km/h)  =  23.520 % <br>
 Roundabout mandatory  =  7.325 % <br>
 No passing for vehicles over 3.5 metric tons  =  3.273 % <br>
-Priority road  =  2.949 % <br><br><br><br>
+Priority road  =  2.949 % <br><br><br><br><br><br>
 
 <img src="results/pred_4.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 Right-of-way at the next intersection  =  27.180 % <br>
 Road narrows on the right  =  24.960 % <br>
 Beware of ice/snow  =  18.668 % <br>
 Road work  =  10.364 % <br>
-Children crossing  =  9.702 % <br><br><br><br>
+Children crossing  =  9.702 % <br><br><br><br><br><br>
 
 <img src="results/pred_5.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 Children crossing  =  42.562 % <br>
 Speed limit (50km/h)  =  15.265 % <br>
 Speed limit (60km/h)  =  9.236 % <br>
 Road work  =  6.42005354166 % <br>
-Speed limit (80km/h)  =  4.657 % <br><br><br><br>
+Speed limit (80km/h)  =  4.657 % <br><br><br><br><br><br>
 
 <img src="results/pred_6.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Turn left ahead  =  99.488 %
-Keep right  =  0.510 %
-Ahead only  =  0.0006 %
-Priority road  =  0.0001 %
-Road narrows on the right  =  0.0001 %
-```
-<br><br><br><br>
+Turn left ahead  =  99.488 % <br>
+Keep right  =  0.510 % <br>
+Ahead only  =  0.0006 % <br>
+Priority road  =  0.0001 % <br>
+Road narrows on the right  =  0.0001 % <br><br><br><br><br><br>
 
 <img src="results/pred_7.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Roundabout mandatory  =  77.899 %
-Speed limit (100km/h)  =  19.316 %
-Priority road  =  2.406 %
-Speed limit (60km/h)  =  0.203 %
-Speed limit (80km/h)  =  0.132 %
-```
-<br><br><br><br>
+Roundabout mandatory  =  77.899 % <br>
+Speed limit (100km/h)  =  19.316 % <br>
+Priority road  =  2.406 % <br>
+Speed limit (60km/h)  =  0.203 % <br>
+Speed limit (80km/h)  =  0.132 % <br><br><br><br><br><br>
 
 <img src="results/pred_8.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Speed limit (100km/h)  =  55.397 %
-Speed limit (120km/h)  =  13.719 %
-Vehicles over 3.5 metric tons prohibited  =  11.443 %
-Speed limit (20km/h)  =  4.322 %
-Right-of-way at the next intersection  =  3.761 %
-```
-<br><br><br><br>
+Speed limit (100km/h)  =  55.397 % <br>
+Speed limit (120km/h)  =  13.719 % <br>
+Vehicles over 3.5 metric tons prohibited  =  11.443 % <br>
+Speed limit (20km/h)  =  4.322 % <br>
+Right-of-way at the next intersection  =  3.761 % <br><br><br><br><br><br>
 
 <img src="results/pred_9.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Speed limit (50km/h)  =  47.604 %
-Speed limit (30km/h)  =  27.445 %
-Speed limit (60km/h)  =  17.649 %
-Speed limit (80km/h)  =  5.681 %
-End of speed limit (80km/h)  =  1.328 %
-```
-
-<br><br><br><br><br>
+Speed limit (50km/h)  =  47.604 % <br>
+Speed limit (30km/h)  =  27.445 % <br>
+Speed limit (60km/h)  =  17.649 % <br>
+Speed limit (80km/h)  =  5.681 % <br>
+End of speed limit (80km/h)  =  1.328 % <br><br><br><br><br><br>
 
 **<a href="https://github.com/mike9251/SDC/blob/master/CarND-Traffic-Sign-Classifier-Project-master/Traffic_Sign_Classifier.ipynb">Jupyter Notebook</a> for this project.**
 
