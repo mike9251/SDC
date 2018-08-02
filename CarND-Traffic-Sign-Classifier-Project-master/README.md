@@ -120,47 +120,35 @@ Ahead only  =  99.932 % <br>
 Dangerous curve to the left  =  0.029 % <br>
 Go straight or right  =  0.016 % <br>
 Turn right ahead  =  0.012 % <br>
-Right-of-way at the next intersection  =  0.009 % <br>
+Right-of-way at the next intersection  =  0.009 % <br><br><br><br><br>
 
 <img src="results/pred_2.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-No passing  =  90.162 %
-End of no passing  =  9.531 %
-No passing for vehicles over 3.5 metric tons  =  0.280 %
-Vehicles over 3.5 metric tons prohibited  =  0.015 %
-Ahead only  =  0.003 %
-```
-<br><br><br><br>
+No passing  =  90.162 % <br>
+End of no passing  =  9.531 % <br>
+No passing for vehicles over 3.5 metric tons  =  0.280 % <br>
+Vehicles over 3.5 metric tons prohibited  =  0.015 % <br>
+Ahead only  =  0.003 % <br><br><br><br>
 
 <img src="results/pred_3.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Speed limit (60km/h)  =  49.536 %
-Speed limit (20km/h)  =  23.520 %
-Roundabout mandatory  =  7.325 %
-No passing for vehicles over 3.5 metric tons  =  3.273 %
-Priority road  =  2.949 %
-```
-<br><br><br><br>
+Speed limit (60km/h)  =  49.536 % <br>
+Speed limit (20km/h)  =  23.520 % <br>
+Roundabout mandatory  =  7.325 % <br>
+No passing for vehicles over 3.5 metric tons  =  3.273 % <br>
+Priority road  =  2.949 % <br><br><br><br>
 
 <img src="results/pred_4.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Right-of-way at the next intersection  =  27.180 %
-Road narrows on the right  =  24.960 %
-Beware of ice/snow  =  18.668 %
-Road work  =  10.364 %
-Children crossing  =  9.702 %
-```
-<br><br><br><br>
+Right-of-way at the next intersection  =  27.180 % <br>
+Road narrows on the right  =  24.960 % <br>
+Beware of ice/snow  =  18.668 % <br>
+Road work  =  10.364 % <br>
+Children crossing  =  9.702 % <br><br><br><br>
 
 <img src="results/pred_5.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
-```
-Children crossing  =  42.562 %
-Speed limit (50km/h)  =  15.265 %
-Speed limit (60km/h)  =  9.236 %
-Road work  =  6.42005354166 %
-Speed limit (80km/h)  =  4.657 %
-```
-<br><br><br><br>
+Children crossing  =  42.562 % <br>
+Speed limit (50km/h)  =  15.265 % <br>
+Speed limit (60km/h)  =  9.236 % <br>
+Road work  =  6.42005354166 % <br>
+Speed limit (80km/h)  =  4.657 % <br><br><br><br>
 
 <img src="results/pred_6.JPG" width="240" align="left" style="border: 8px solid #ffffff;" alt="Combined Image" />
 ```
