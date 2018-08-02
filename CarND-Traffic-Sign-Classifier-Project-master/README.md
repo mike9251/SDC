@@ -24,19 +24,19 @@ train_df.head()
 ```
 The train data set looks like:
 <div class="imgcap">
- <img src="https://github.com/mike9251/mike9251.github.io/tree/master/assets/self-driving-cars/traffic-sign-classifier/tr_data.JPG" width="480" alt="Combined Image" />
+ <img src="/results/tr_data.JPG" width="480" alt="Combined Image" />
 </div>
 It contains 39209 examples of 43 classes.  
 
 Let's look at a histogramm of class distribution:
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/tr_hist.JPG" width="480" alt="Combined Image" />
+ <img src="/results/traffic-sign-classifier/tr_hist.JPG" width="480" alt="Combined Image" />
 </div>
 It is clear that the data is unbalanced - some classes have way more examples than other.  
 
 Now let's look at the test data set histogramm (test data set contsists of 12630 examples):
 <div class="imgcap">
- <img src="/assets/self-driving-cars/traffic-sign-classifier/test_hist.JPG" width="480" alt="Combined Image" />
+ <img src="/results/traffic-sign-classifier/test_hist.JPG" width="480" alt="Combined Image" />
 </div>
 Compare two distributions:
 <div class="imgcap">
