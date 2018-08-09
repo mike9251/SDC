@@ -3,7 +3,7 @@
 Overview
 ---
 
-The goals of this project is to write a software pipeline to identify the lane boundaries in a video using more advanced algorithms (comparing to the simple one <a href=https://mike9251.github.io/2018/05/26/lane-line-detector/>Udacity Self-Driving Car Project #1</a>.<br>
+The goals of this project is to write a software pipeline to identify the lane boundaries in a video using more advanced algorithms (comparing to the simple one <a href=https://mike9251.github.io/2018/05/26/lane-line-detector/>Udacity Self-Driving Car Project #1</a>).<br>
 
 Steps are the following:
 
