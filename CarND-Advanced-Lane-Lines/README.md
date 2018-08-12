@@ -4,11 +4,14 @@ Overview
 ---
 
 The goals of this project is to write a software pipeline to identify the lane boundaries in a video using more advanced algorithms (comparing to the simple one <a href=https://mike9251.github.io/2018/05/26/lane-line-detector/>Udacity Self-Driving Car Project #1</a>).<br>
+
 Final video:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Qm8VF2G83gU?ecver=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-<br>
+
+
 **Usage:** *python preprocess.py project_video.mp4*
-<br>
+
+
 Steps are the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
