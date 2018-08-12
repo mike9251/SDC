@@ -20,29 +20,33 @@ Steps are the following:
 
 **Camera calibration and distortion correction**
 
-<a href="https://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html">OpenCV documentation</a>.<br>
+Pinhole cameras produce distorted images. With camera calibration we can determine the relation between the camera’s natural units (pixels) and the real world units (for example millimeters) and undistort the images. (More details in 
+<a href="https://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html">OpenCV documentation</a>).<br>
+First of all we detect chessboard pattern in the calibrated images with `cv2.findChessboardCorners`.  Then using obtained 3d points in real world space and 2d points in image plane calculate the camera matrix and distortion matrix with `cv2.calibrateCamera` function. Finally, to undistort the image we use distortion matrix with `cv2.undistort` function.
 <div class="imgcap">
  <img src="output_images/camera_calib_input.png" width="480" alt="Combined Image" /> 
  <div class="thecap">Distorted chessboard image</div>
- </div>
- <div class="imgcap">
+</div>
+<div class="imgcap">
  <img src="output_images/camera_calib_input1.png" width="480" alt="Combined Image" />
- <div class="thecap">Distorted chessboard image</div>
- </div>
- <div class="imgcap">
+ <div class="thecap">Chessboard pattern</div>
+</div>
+<div class="imgcap">
  <img src="output_images/camera_calib_output.png" width="480" alt="Combined Image" />
  <div class="thecap">Undistorted chessboard image</div>
- </div>
- 
- <div class="imgcap">
+</div>
+<div class="imgcap">
  <img src="output_images/input.png" width="480" alt="Combined Image" />
  <div class="thecap">Original input image</div>
- </div>
- <div class="imgcap">
+</div>
+<div class="imgcap">
  <img src="output_images/input_undist.png" width="480" alt="Combined Image" />
  <div class="thecap">Undistorted input image</div>
- </div>
+</div>
+ 
  **Creating a binary image**
+ 
+ To create a binary representation of an image we will use several methods: extract yellow and white color masks, perform Sobel operator on the image and threshold the result. Then combined the results and perform morphological closing operation to highlight the lane lines. 
  <div class="imgcap">
  <img src="output_images/yw_img.png" width="480" alt="Combined Image" />
  <div class="thecap">Yellow/White color extract image</div>
@@ -94,7 +98,8 @@ Steps are the following:
  </div>
  
  **Determine the curvature of the lane and vehicle position with respect to center.**
- 
+The curvature calculation method is described <a href="http://www.intmath.com/applications-differentiation/8-radius-curvature.php">here</a>. Assume that the camera is located at the center on the car. Then the car's deviation from the center of the lane can be calculated `|image_center - lane_center|`. To convert pixels to meters I used an assumption that the lane is about 30 meters long and 3.7 meters wide (provided by Udacity).
+
  **Warp the detected lane boundaries back onto the original image. Final result.**
  <div class="imgcap">
  <img src="output_images/lane.png" width="480" alt="Combined Image" />
@@ -104,14 +109,4 @@ Steps are the following:
  <img src="output_images/result.png" width="480" alt="Combined Image" />
  <div class="thecap">Result image</div>
  </div>
-The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing your pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
-
-To help the reviewer examine your work, please save examples of the output from each stage of your pipeline in the folder called `output_images`, and include a description in your writeup for the project of what each image shows.    The video called `project_video.mp4` is the video your pipeline should work well on.  
-
-The `challenge_video.mp4` video is an extra (and optional) challenge for you if you want to test your pipeline under somewhat trickier conditions.  The `harder_challenge.mp4` video is another optional challenge and is brutal!
-
-If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
