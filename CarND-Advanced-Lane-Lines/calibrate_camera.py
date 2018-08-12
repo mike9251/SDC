@@ -14,7 +14,6 @@ def calibrate_camera(image_dir, verbouse=False):
 	imgpoints = []  # 2d points in image plane.
 
 	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-
 	for name in image_names:
 	    img_bgr = cv2.imread(name)
 	    gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
@@ -22,7 +21,7 @@ def calibrate_camera(image_dir, verbouse=False):
 	    # Find the chess board corners
 	    ret, corners = cv2.findChessboardCorners(gray, (9,6), None)
 
-	        # If found, add object points, image points (after refining them)
+	    # If found, add object points, image points (after refining them)
 	    if ret == True:
 	        objpoints.append(objp)
 
@@ -32,33 +31,19 @@ def calibrate_camera(image_dir, verbouse=False):
 	        # Draw and display the corners
 	        if verbouse == True:
 	            img = cv2.drawChessboardCorners(img_bgr, (9,6), corners, ret)
-	            cv2.imshow('img', img)
+	            cv2.imshow('img', cv2.resize(img, (480, 300)))
 	            cv2.waitKey(0)
-
-	            cv2.destroyAllWindows()
 
 	ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 	return mtx, dist, rvecs, tvecs
 
 def undistort_image(image, verbouse=False):
-	mtx, dist, rvecs, tvecs = calibrate_camera('camera_cal/', False)
+	mtx, dist, rvecs, tvecs = calibrate_camera('camera_cal/', verbouse)
 	undistort_img = cv2.undistort(image, mtx, dist, None, mtx)
 
-	if verbouse == True:
-		#fig, ax = plt.subplots(nrows=1, ncols=2)
-		#ax[0].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-		#ax[1].imshow(cv2.cvtColor(undistort_img, cv2.COLOR_BGR2RGB))
-		#plt.show()
-		cv2.imshow("input", image)
-		cv2.imshow("output", undistort_img)
+	if verbouse != True:
+		cv2.imshow("input", cv2.resize(image, (480, 300)))
+		cv2.imshow("output", cv2.resize(undistort_img, (480, 300)))
 		cv2.waitKey(0)
-		cv2.destroyAllWindows()
 
 	return undistort_img
-
-
-image_names = glob.glob('camera_cal/*.jpg')
-
-image = cv2.imread('camera_cal/calibration2.jpg')
-
-undist_img = undistort_image(image, True)
