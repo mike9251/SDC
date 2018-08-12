@@ -19,8 +19,9 @@ https://github.com/ndrplz/self-driving-car/tree/master/project_4_advanced_lane_f
 https://github.com/rkipp1210/pydata-berlin-2017  
 https://github.com/lfiaschi/udacity-advanced-lane-finding-project
 
-5. Vehicle Detection and Tracking
-https://medium.com/intro-to-artificial-intelligence/vehicle-detection-and-tracking-udacitys-self-driving-car-nanodegree-ca02330820ee
-https://github.com/antevis/CarND-Project5-Vehicle_Detection_and_Tracking
-https://becominghuman.ai/udacity-self-driving-car-nanodegree-project-5-vehicle-detection-fbf6a6795c13
+5. Vehicle Detection and Tracking  
+https://medium.com/intro-to-artificial-intelligence/vehicle-detection-and-tracking-udacitys-self-driving-car-nanodegree-ca02330820ee  
+https://medium.com/@ckyrkou/udacity-sdce-nanodegree-term-1-project-5-vehicle-detection-77594825db83  
+https://github.com/antevis/CarND-Project5-Vehicle_Detection_and_Tracking  
+https://becominghuman.ai/udacity-self-driving-car-nanodegree-project-5-vehicle-detection-fbf6a6795c13  
 https://github.com/ndrplz/self-driving-car/tree/master/project_5_vehicle_detection
