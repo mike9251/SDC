@@ -26,4 +26,5 @@ https://github.com/antevis/CarND-Project5-Vehicle_Detection_and_Tracking
 https://becominghuman.ai/udacity-self-driving-car-nanodegree-project-5-vehicle-detection-fbf6a6795c13  
 https://github.com/ndrplz/self-driving-car/tree/master/project_5_vehicle_detection
 https://www.pyimagesearch.com/2015/03/23/sliding-windows-for-object-detection-with-python-and-opencv/ - Sliding Window  
-https://www.pyimagesearch.com/2015/03/16/image-pyramids-with-python-and-opencv/ - Image Pyramids
+https://www.pyimagesearch.com/2015/03/16/image-pyramids-with-python-and-opencv/ - Image Pyramids  
+https://www.pyimagesearch.com/2014/11/10/histogram-oriented-gradients-object-detection/ - HOG
