@@ -11,8 +11,10 @@ Vehicle Detection and Tracking Project:
 6. ~~Try to use YOLO~~
 
 Report:
-1. Loading data
+1. Loading data  
 Loading data for training SVM classifier is implemented in `load_data.py` in `def load_data(bShuffle=False, cs='YCrCb')` function. It loads images both classes (vehicles, non-vehicles) and converts color space to `cs`. Also data augmentation is performed - each image is horizontally flipped, so the result data set is doubled. Finally the data set gets shuffled and splitted into train/val sets (90%/10%).
+Datasets: <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip">Vehicle</a> and <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip">Non-vehicle</a>.  
+
 2. Descriptor  
 
     2.1 Histogtram (YCbCr)  
