@@ -8,4 +8,4 @@ Vehicle Detection and Tracking Project:
 3. ~~Train SVM classifier with feature vectors~~
 4. ~~Implement Sliding Window method~~
 5. ~~Implement Heat Map calculation to eliminate false positive detections~~
-6. Try to use YOLO (or FCN)
+6. ~~Try to use YOLO~~
