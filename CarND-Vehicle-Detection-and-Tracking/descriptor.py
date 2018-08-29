@@ -6,21 +6,19 @@ import matplotlib.pyplot as plt
 
 
 def get_hist_feature(image, size=(64, 64), verbous=False):
-    #if(size[0] != image.shape[0] or size[1] != image.shape[1]):
-    #    image = cv2.resize(image, size)
-    r_hist = cv2.calcHist([image],[0],None,[128],[0,256])
-    g_hist = cv2.calcHist([image],[1],None,[128],[0,256])
-    b_hist = cv2.calcHist([image],[2],None,[128],[0,256])
+    c1_hist = cv2.calcHist([image],[0],None,[256],[0,256])
+    c2_hist = cv2.calcHist([image],[1],None,[256],[0,256])
+    c3_hist = cv2.calcHist([image],[2],None,[256],[0,256])
     
     if(verbous == True):
-        rgb_hist = np.concatenate((r_hist, g_hist, b_hist), axis=1)
-        color = ('r','g','b')
+        hist = np.concatenate((c1_hist, c2_hist, c3_hist), axis=1)
+        color = ('c1','c2','c3')
         for i, col in enumerate(color):
-            plt.plot(rgb_hist[:,i],color = col)
-            plt.xlim([0,128])
+            plt.plot(hist[:,i],color = col)
+            plt.xlim([0,256])
         plt.show()
     
-    return np.concatenate((r_hist, g_hist, b_hist), axis=0)[:, 0]
+    return np.concatenate((c1_hist, c2_hist, c3_hist), axis=0)[:, 0]
 
 def get_spatial_bin_feature(image, size=(16, 16)):
     return cv2.resize(image, size).ravel()
@@ -81,8 +79,8 @@ def get_descriptor_for_train(images):
         img_desc.append(get_hist_feature(img))
         img_desc.append(get_spatial_bin_feature(img))
         img_desc.append(get_hog_features(img[:,:,0], size=(64, 64), Verbose=False, feature_vector=True))
-        #img_desc.append(get_hog_features(img[:,:,1], size=(64, 64), Verbose=False, feature_vector=True))
-        #img_desc.append(get_hog_features(img[:,:,2], size=(64, 64), Verbose=False, feature_vector=True))
+        img_desc.append(get_hog_features(img[:,:,1], size=(64, 64), Verbose=False, feature_vector=True))
+        img_desc.append(get_hog_features(img[:,:,2], size=(64, 64), Verbose=False, feature_vector=True))
 
         #if(i == 0):
         #	print("Shapes:\nHist = ", img_desc[0].shape, "\nSpatial = ", img_desc[1].shape, "\nHog1 = ", img_desc[2].shape, "\nHog2 = ", img_desc[3].shape, "\nHog3 = ", img_desc[4].shape)

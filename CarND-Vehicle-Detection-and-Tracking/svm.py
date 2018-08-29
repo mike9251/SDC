@@ -20,18 +20,18 @@ def train_svm(X_tr, y_tr, X_val=None, y_val=None):
 		acc = accuracy_score(y_val, clf.predict(X_val_scaled))
 		print('Validation accuracy: ', round(acc, 4))
     
-	with open('data/svm_trained_new2.pickle', 'wb') as f:
+	with open('data/svm_trained.pickle', 'wb') as f:
 		pickle.dump(clf, f)
-	with open('data/feature_scaler_new2.pickle', 'wb') as f:
+	with open('data/feature_scaler.pickle', 'wb') as f:
 		pickle.dump(feature_scaler_tr, f)
 
 	return clf, feature_scaler_tr
 
 def load_model():
 	# load pretrained svm classifier
-	clf = pickle.load(open('data/svm_trained_new2.pickle', 'rb'))
+	clf = pickle.load(open('data/svm_trained.pickle', 'rb'))
 
 	# load feature scaler fitted on training data
-	feature_scaler = pickle.load(open('data/feature_scaler_new2.pickle', 'rb'))
+	feature_scaler = pickle.load(open('data/feature_scaler.pickle', 'rb'))
 
 	return clf, feature_scaler

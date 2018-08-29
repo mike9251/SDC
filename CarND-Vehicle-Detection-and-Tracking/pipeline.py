@@ -131,7 +131,7 @@ def NMS(boxes, overlapThresh):
 def detect_cars(img, scale, clf, feature_scaler):
 	boxes = []
 	y_start = 400
-	y_end = 600
+	y_end = 512
 
 	resize_w = resize_h = 64
 	window = 64
@@ -149,14 +149,14 @@ def detect_cars(img, scale, clf, feature_scaler):
 
 	n_cell_per_window = (window // pix_per_cell) - 1
 
-	n_cell_per_step = 4
+	n_cell_per_step = 2
 
 	n_step_in_cells_x = (n_cell_x - n_cell_per_window) // n_cell_per_step
 	n_step_in_cells_y = (n_cell_y - n_cell_per_window) // n_cell_per_step
 
 	hog_c1 = get_hog_features(roi[:,:,0], size=(64, 64), Verbose=False, feature_vector=False)
-	#hog_c2 = get_hog_features(roi[:,:,1], size=(64, 64), Verbose=False, feature_vector=False)
-	#hog_c3 = get_hog_features(roi[:,:,2], size=(64, 64), Verbose=False, feature_vector=False)
+	hog_c2 = get_hog_features(roi[:,:,1], size=(64, 64), Verbose=False, feature_vector=False)
+	hog_c3 = get_hog_features(roi[:,:,2], size=(64, 64), Verbose=False, feature_vector=False)
 
 	for x_cell in range(n_step_in_cells_x):
 		for y_cell in range(n_step_in_cells_y):
@@ -164,10 +164,10 @@ def detect_cars(img, scale, clf, feature_scaler):
 			x_pos_in_cells = x_cell * n_cell_per_step
 
 			hog_feat_c1 = hog_c1[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
-			#hog_feat_c2 = hog_c2[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
-			#hog_feat_c3 = hog_c3[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
+			hog_feat_c2 = hog_c2[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
+			hog_feat_c3 = hog_c3[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
 
-			hog_feat = hog_feat_c1#np.concatenate([hog_feat_c1, hog_feat_c2, hog_feat_c3])
+			hog_feat = np.concatenate([hog_feat_c1, hog_feat_c2, hog_feat_c3])
 
 			xtl = x_pos_in_cells * pix_per_cell
 			ytl = y_pos_in_cells * pix_per_cell
@@ -213,14 +213,14 @@ def pipeline2(img, clf, feature_scaler, verbose=False):
 
 	print("Boxes before NMS: ",len(boxes))
 
-	#boxes_NMS = []
-	#for box in boxes:
-	#	boxes_NMS.append([box[0][0], box[0][1], box[1][0], box[1][1]])
+	boxes_NMS = []
+	for box in boxes:
+		boxes_NMS.append([box[0][0], box[0][1], box[1][0], box[1][1]])
 
-	#boxes_clean = NMS(np.array(boxes_NMS), 0.3)
-	#print("Boxes after NMS: ",len(boxes_clean))
+	boxes_clean = NMS(np.array(boxes_NMS), 0.25)
+	print("Boxes after NMS: ",len(boxes_clean))
 
-	heatmap, heatmap_thresh = heat_map(img, boxes, thresh=0, verbose=False, nms=False)
+	heatmap, heatmap_thresh = heat_map(img, boxes_clean, thresh=0, verbose=False, nms=True)
 	#cv2.imshow("heatmap", cv2.resize(heatmap, (400, 300)))
 	#cv2.waitKey(0)
 	#cv2.imshow("heatmap_thresh", cv2.resize(heatmap_thresh, (400, 300)))
@@ -234,8 +234,13 @@ def pipeline2(img, clf, feature_scaler, verbose=False):
 	#img_heatmap = cv2.applyColorMap(normalize_image(heatmap), colormap=cv2.COLORMAP_HOT)         # draw heatmap
 	#img_segmented_heat_map = cv2.applyColorMap(normalize_image(segmented_heat_map), colormap=cv2.COLORMAP_HOT)  # draw label
 	#img_detection = draw_labeled_bounding_boxes(frame.copy(), labeled_frame, num_objects)        # draw detected bboxes
+	
 	result, final_boxes = draw_segments(result, segmented_heat_map, num_objects)
+	
 	#img_blend_out = prepare_output_blend(frame, img_hot_windows, img_heatmap, img_labeling, img_detection)
+
+	#for box in boxes_clean:
+	#	cv2.rectangle(result, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 2)
 
 	if verbose:
 	    #cv2.imshow('detection bboxes', cv2.resize(img, (480, 300)))
@@ -346,9 +351,10 @@ filename = get_args(*sys.argv)
 
 def pipeline(video_file):
 	
-	out = cv2.VideoWriter('outpy.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
+	out = cv2.VideoWriter('out6.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
 	clf, feature_scaler = load_model()
 	#sliding_window(cv2.imread('test_images/test4.jpg'), clf, feature_scaler)
+	cv2.namedWindow("result", cv2.WINDOW_NORMAL)
 	cap = cv2.VideoCapture(video_file)
 	while cap.isOpened():
 		ret, frame = cap.read()
@@ -357,12 +363,11 @@ def pipeline(video_file):
 		# undistort the image
 		result = pipeline2(frame, clf, feature_scaler)
 
-		cv2.namedWindow("result", cv2.WINDOW_NORMAL)
 		cv2.imshow("result", result)
-
-		out.write(result)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
+
+		out.write(result)
 
 	cap.release()
 	cv2.destroyAllWindows()
