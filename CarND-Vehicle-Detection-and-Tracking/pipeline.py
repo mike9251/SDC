@@ -1,7 +1,6 @@
 from load_data import load_data, color_convert
 from svm import load_model, train_svm
 from descriptor import get_descriptor, get_hist_feature, get_spatial_bin_feature, get_hog_features, get_descriptor_for_train
-#from processing import sliding_window
 import cv2
 import scipy
 import numpy as np
@@ -128,7 +127,7 @@ def NMS(boxes, overlapThresh):
 	return boxes[pick].astype("int")
 
 
-def detect_cars(img, scale, clf, feature_scaler):
+def detect(img, scale, clf, feature_scaler):
 	boxes = []
 	y_start = 400
 	y_end = 512
@@ -143,52 +142,52 @@ def detect_cars(img, scale, clf, feature_scaler):
 		roi = cv2.resize(roi, (np.int(roi.shape[0] // scale), np.int(roi.shape[1] // scale)))
 
 	H, W, C = roi.shape
-
+	# Number of cells in X, Y axis
 	n_cell_x = (W // pix_per_cell) - 1
 	n_cell_y = (H // pix_per_cell) - 1
-
+	# Number of cell in the Window
 	n_cell_per_window = (window // pix_per_cell) - 1
-
+	# Stride (in cells) of sliding window
 	n_cell_per_step = 2
-
+	# Number of steps (in cells) for Sliding Window in X, Y axis
 	n_step_in_cells_x = (n_cell_x - n_cell_per_window) // n_cell_per_step
 	n_step_in_cells_y = (n_cell_y - n_cell_per_window) // n_cell_per_step
-
+	# HOG features for each channel of the entire image
 	hog_c1 = get_hog_features(roi[:,:,0], size=(64, 64), Verbose=False, feature_vector=False)
 	hog_c2 = get_hog_features(roi[:,:,1], size=(64, 64), Verbose=False, feature_vector=False)
 	hog_c3 = get_hog_features(roi[:,:,2], size=(64, 64), Verbose=False, feature_vector=False)
-
+	# Perform Sliding Window
 	for x_cell in range(n_step_in_cells_x):
 		for y_cell in range(n_step_in_cells_y):
+			# Coordinates in cells
 			y_pos_in_cells = y_cell * n_cell_per_step
 			x_pos_in_cells = x_cell * n_cell_per_step
-
+			# Take HOG feat for the current Window and unwrap them to a vector
 			hog_feat_c1 = hog_c1[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
 			hog_feat_c2 = hog_c2[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
 			hog_feat_c3 = hog_c3[y_pos_in_cells: y_pos_in_cells + n_cell_per_window, x_pos_in_cells: x_pos_in_cells + n_cell_per_window].ravel()
 
 			hog_feat = np.concatenate([hog_feat_c1, hog_feat_c2, hog_feat_c3])
-
+			# Calc coord of the Window in pixels
 			xtl = x_pos_in_cells * pix_per_cell
 			ytl = y_pos_in_cells * pix_per_cell
 
 			# crop a window from the roi
 			patch = cv2.resize(roi[ytl:ytl+window, xtl:xtl+window, :], (resize_h, resize_w))
-
+			# Get histogram feature
 			hist_feat = get_hist_feature(patch)
-
+			# Get downsampled and unwrapped image 
 			spatial_feat = get_spatial_bin_feature(patch)
-
+			# Form a descriptor
 			desc = np.concatenate([hist_feat, spatial_feat, hog_feat])
 			desc = desc.reshape(1, -1)
-
+			# Perform standardization by centering and scaling
 			scaled_desc = feature_scaler.transform(desc)
-
+			# Classify the crop
 			y_pred = clf.predict(scaled_desc)
 
 			if(y_pred == 1):
 				print("y_pred = ", y_pred, " scale = ", scale)
-				#resized = img_as_ubyte(resized)#resized.copy()
 				x1 = np.int(xtl * scale)
 				y1 = np.int(ytl * scale)
 				winW = np.int(window * scale)
@@ -196,20 +195,19 @@ def detect_cars(img, scale, clf, feature_scaler):
 
 				tl = (x1, y1 + y_start)
 				br = (x1 + winW, y1 + winH + y_start)
-
+				# Keep top-left and bottom-right coordinates of the Window
 				boxes.append((tl, br))
 
 	return boxes
 
-
-
-def pipeline2(img, clf, feature_scaler, verbose=False):
+def pipeline(img, clf, feature_scaler, queue, verbose=False):
 	scales = [1, 0.5]
+	hm_thresh = 0
 	boxes = []
 	result = img
 
 	for scale in scales:
-		boxes += detect_cars(img, scale, clf, feature_scaler)
+		boxes += detect(img, scale, clf, feature_scaler)
 
 	print("Boxes before NMS: ",len(boxes))
 
@@ -217,131 +215,34 @@ def pipeline2(img, clf, feature_scaler, verbose=False):
 	for box in boxes:
 		boxes_NMS.append([box[0][0], box[0][1], box[1][0], box[1][1]])
 
-	boxes_clean = NMS(np.array(boxes_NMS), 0.25)
+	# Suppress overlaping bboxes with IoU > 0.4 
+	boxes_clean = NMS(np.array(boxes_NMS), 0.4)
 	print("Boxes after NMS: ",len(boxes_clean))
+	# Push bboxes for current frame in the queue and calc threshold for heat map
+	if (len(queue) == 3):
+		queue.pop(0)
+	if (len(boxes_NMS) > 0):
+		queue.append(boxes_clean)
+		hm_thresh = len(queue) - 1
 
-	heatmap, heatmap_thresh = heat_map(img, boxes_clean, thresh=0, verbose=False, nms=True)
-	#cv2.imshow("heatmap", cv2.resize(heatmap, (400, 300)))
-	#cv2.waitKey(0)
-	#cv2.imshow("heatmap_thresh", cv2.resize(heatmap_thresh, (400, 300)))
-	#v2.waitKey(0)
+	bboxes = np.concatenate(queue, axis=0)
+	print(bboxes.shape)
+
+	heatmap, heatmap_thresh = heat_map(img, bboxes, thresh=hm_thresh, verbose=False, nms=True)
+
 	# label connected components
 	segmented_heat_map, num_objects = scipy.ndimage.measurements.label(heatmap_thresh)
 	print("Num obj = ", num_objects)
-
-	# prepare images for blend
-	#img_hot_windows = img#draw_boxes(img, hot_windows, color=(0, 0, 255), thick=2)                 # show pos windows
-	#img_heatmap = cv2.applyColorMap(normalize_image(heatmap), colormap=cv2.COLORMAP_HOT)         # draw heatmap
-	#img_segmented_heat_map = cv2.applyColorMap(normalize_image(segmented_heat_map), colormap=cv2.COLORMAP_HOT)  # draw label
-	#img_detection = draw_labeled_bounding_boxes(frame.copy(), labeled_frame, num_objects)        # draw detected bboxes
+	print("Queue ", len(queue), "thresh = ", hm_thresh)
 	
 	result, final_boxes = draw_segments(result, segmented_heat_map, num_objects)
-	
-	#img_blend_out = prepare_output_blend(frame, img_hot_windows, img_heatmap, img_labeling, img_detection)
-
-	#for box in boxes_clean:
-	#	cv2.rectangle(result, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 2)
 
 	if verbose:
-	    #cv2.imshow('detection bboxes', cv2.resize(img, (480, 300)))
 	    cv2.imshow('heatmap', cv2.resize(img_heatmap, (480, 300)))
 	    cv2.imshow('img_segmented_heat_map', cv2.resize(img_segmented_heat_map, (480, 300)))
-	    #cv2.imshow('result', cv2.resize(result, (480, 300)))
 	    cv2.waitKey(0)
-	#cv2.imshow('result', cv2.resize(result, (480, 300)))
-	#cv2.waitKey(0)
-	#cv2.destroyAllWindows()
+
 	return result
-
-
-
-
-
-def sliding_window_core(image, stepSize, windowSize):
-	# slide a window across the image
-	for y in range(int(image.shape[0] * 0.5), image.shape[0], stepSize):
-		for x in range(0, image.shape[1], stepSize):
-			# yield the current window
-			yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0], :])
-
-def sliding_window(img, clf, feature_scaler, verbose=False):
-	# loop over the image pyramid
-	winW, winH = (64,64)
-	stepSize = 32
-	boxes = []
-	result = img.copy()
-	for (scale, resized) in enumerate(pyramid_gaussian(img, downscale=2)):
-		if resized.shape[0] < 64 or resized.shape[1] < 64:#or scale >= 1:
-			break
-		# loop over the sliding window for each layer of the pyramid
-		for (x, y, window) in sliding_window_core(resized, stepSize=stepSize // (2**scale), windowSize=(winW, winH)):
-	    	# if the window does not meet our desired window size, ignore it
-			if window.shape[0] != winH or window.shape[1] != winW:
-				continue
-
-	    	# THIS IS WHERE YOU WOULD PROCESS YOUR WINDOW, SUCH AS APPLYING A
-	    	# MACHINE LEARNING CLASSIFIER TO CLASSIFY THE CONTENTS OF THE
-	    	# WINDOW
-			#print(window.shape)
-			#gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-			#print(gray.shape)
-			window = img_as_ubyte(window)
-			#print(window)
-			#cv2.imshow("win", (window))
-			#cv2.waitKey(10)
-			desc = get_descriptor(color_convert(window, 'YCrCb'))
-			#feature_scaler = StandardScaler().fit(desc)
-			desc_scaled = feature_scaler.transform(desc)
-			y_pred = clf.predict(desc_scaled)
-			
-			# since we do not have a classifier, we'll just draw the window
-			if(y_pred == 1):
-				print("y_pred = ", y_pred, " scale = ", scale)
-				#resized = img_as_ubyte(resized)#resized.copy()
-				x2 = (2**scale) * x
-				y2 = (2**scale) * y
-				winW2 = (2**scale) * winW
-				winH2 = (2**scale) * winH
-				boxes.append([x2, y2, x2 + winW2, y2 + winH2])
-				#cv2.rectangle(img, (x2, y2), (x2 + winW2, y2 + winH2), (0, 255, 0), 2)
-				#cv2.imshow("Window", img)
-				#cv2.waitKey(1)
-			#cv2.waitKey(50)
-		#cv2.waitKey(0)
-	#cv2.destroyAllWindows()
-	#print("Before NMS: ", len(boxes))
-	#boxes_clean = NMS(np.array(boxes), 0.35)
-	#print("After NMS: ", len(boxes_clean))
-	#for box in boxes_clean:
-	#	cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 2)
-	#cv2.imshow("Window", img)
-	#cv2.waitKey(0)
-
-	heatmap, heatmap_thresh = heat_map(img, boxes, thresh=0, verbose=True)
-	#cv2.imshow("heatmap", cv2.resize(heatmap, (400, 300)))
-	#cv2.waitKey(0)
-	#cv2.imshow("heatmap_thresh", cv2.resize(heatmap_thresh, (400, 300)))
-	#v2.waitKey(0)
-	# label connected components
-	segmented_heat_map, num_objects = scipy.ndimage.measurements.label(heatmap_thresh)
-	print("Num obj = ", num_objects)
-
-	# prepare images for blend
-	#img_hot_windows = img#draw_boxes(img, hot_windows, color=(0, 0, 255), thick=2)                 # show pos windows
-	#img_heatmap = cv2.applyColorMap(normalize_image(heatmap), colormap=cv2.COLORMAP_HOT)         # draw heatmap
-	#img_segmented_heat_map = cv2.applyColorMap(normalize_image(segmented_heat_map), colormap=cv2.COLORMAP_HOT)  # draw label
-	#img_detection = draw_labeled_bounding_boxes(frame.copy(), labeled_frame, num_objects)        # draw detected bboxes
-	result, final_boxes = draw_segments(result, segmented_heat_map, num_objects)
-	#img_blend_out = prepare_output_blend(frame, img_hot_windows, img_heatmap, img_labeling, img_detection)
-
-	if True:#verbose:
-	    cv2.imshow('detection bboxes', cv2.resize(img, (480, 300)))
-	    cv2.imshow('heatmap', cv2.resize(img_heatmap, (480, 300)))
-	    cv2.imshow('img_segmented_heat_map', cv2.resize(img_segmented_heat_map, (480, 300)))
-	    cv2.imshow('result', cv2.resize(result, (480, 300)))
-	    cv2.waitKey(0)
-	
-	cv2.destroyAllWindows()
 
 
 def get_args(name='default', video_file="None"):
@@ -349,19 +250,20 @@ def get_args(name='default', video_file="None"):
 
 filename = get_args(*sys.argv)
 
-def pipeline(video_file):
-	
+def process_video(video_file):
+	# To keep track of detected bboxes for previus frames
+	queue = []
+
 	out = cv2.VideoWriter('out6.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
 	clf, feature_scaler = load_model()
-	#sliding_window(cv2.imread('test_images/test4.jpg'), clf, feature_scaler)
+
 	cv2.namedWindow("result", cv2.WINDOW_NORMAL)
 	cap = cv2.VideoCapture(video_file)
 	while cap.isOpened():
 		ret, frame = cap.read()
 		if not ret:
 			break
-		# undistort the image
-		result = pipeline2(frame, clf, feature_scaler)
+		result = pipeline(frame, clf, feature_scaler, queue)
 
 		cv2.imshow("result", result)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -372,7 +274,7 @@ def pipeline(video_file):
 	cap.release()
 	cv2.destroyAllWindows()
 
-pipeline(filename)
+process_video(filename)
 
 def train():
 	X_tr, X_val, y_train, y_val = load_data(bShuffle=True, cs='YCrCb')

@@ -25,22 +25,16 @@ def load_data(bShuffle=False, cs='YCrCb'):
     y = []
     
     vehicle_image_names = glob.glob('data/vehicles/*/*.png')
-    #n_tr = [x for x in range(0, len(vehicle_image_names), len(vehicle_image_names) // 10)]
-    print("Loading train dataset: \n")
+    print("Loading train dataset...")
     for (i, name) in enumerate(vehicle_image_names):
         X.append(color_convert(cv2.imread(name), cs))
         y.append(1)
         horizontal_img = cv2.flip(X[-1], 1 )
         X.append(horizontal_img)
         y.append(1)
-        #if(i == n_tr.front):
-        #	num = 10
-        #	print(num, "% ")
-        #	num = 2 * num
     
     non_vehicle_image_names = glob.glob('data/non-vehicles/*/*.png')
-    print("\nLoading val dataset: \n")
-    n_val = [x for x in range(0, len(vehicle_image_names), len(vehicle_image_names) // 10)]
+    print("Loading val dataset...")
     for name in non_vehicle_image_names:
         X.append(color_convert(cv2.imread(name), cs))
         y.append(0)
