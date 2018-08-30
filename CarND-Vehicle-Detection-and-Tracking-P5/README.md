@@ -31,7 +31,7 @@ Datasets: <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicle
     our `pixels_per_cell` as 4x4, we would thus have 32 x 32 = 1024 cells.
      
     Then calculated histograms are normalized. For this step 'cells' are grouped into 'blocks'.	For each of the cells in the 
-    current block we concatenate their corresponding gradient histograms, followe` from sklearn.svm. If a validationd set was passed to the `train_svm` function the trained model  by either L1 or L2 normalizing the entire 
+    current block we concatenate their corresponding gradient histograms and perfomr either L1 or L2 normalization of the entire 
     concatenated feature vector. Normalization of HOGs increases performance of the descriptor.
     
     Parameters of the HOG descriptor extractor:  
@@ -44,6 +44,7 @@ Datasets: <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicle
 
     Instead of calculating HOG features for each Window in the image do it once for the entire image and then extract 
     features that correspond to the current Sliding Window. This approach improves performance.  
+    HOG explanations <a href="https://gurus.pyimagesearch.com/lesson-sample-histogram-of-oriented-gradients-and-car-logo-recognition/">1</a> and <a href="https://www.learnopencv.com/histogram-of-oriented-gradients/">2</a>.  
 
 3. SVM, how it was trained, feature_scaler, save model  
 Training SVM procedure is implemented in `svm.py`. First I normalize the image descriptors wiht `StandardScaler` from sklearn.preprocessing package. Then train a classifier `LinearSVC` from sklearn.svm. If a validation set is passed to the `train_svm` function the trained model gets evaluated on val set. Finally the model and the feature scaler are saved as `pkl` files.  
