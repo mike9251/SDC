@@ -31,7 +31,7 @@ Datasets: <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicle
     our `pixels_per_cell` as 4x4, we would thus have 32 x 32 = 1024 cells.
      
     Then calculated histograms are normalized. For this step 'cells' are grouped into 'blocks'.	For each of the cells in the 
-    current block we concatenate their corresponding gradient histograms, followed by either L1 or L2 normalizing the entire 
+    current block we concatenate their corresponding gradient histograms, followe` from sklearn.svm. If a validationd set was passed to the `train_svm` function the trained model  by either L1 or L2 normalizing the entire 
     concatenated feature vector. Normalization of HOGs increases performance of the descriptor.
     
     Parameters of the HOG descriptor extractor:  
@@ -45,9 +45,18 @@ Datasets: <a href="https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicle
     Instead of calculating HOG features for each Window in the image do it once for the entire image and then extract 
     features that correspond to the current Sliding Window. This approach improves performance.  
 
-3. SVM, how it was trained, feature_scaler, save model
-4. Sliding window - width, stride, scales
-5. Heat map - what it is, how to calculate
-6. YOLOv3
+3. SVM, how it was trained, feature_scaler, save model  
+Training SVM procedure is implemented in `svm.py`. First I normalize the image descriptors wiht `StandardScaler` from sklearn.preprocessing package. Then train a classifier `LinearSVC` from sklearn.svm. If a validation set is passed to the `train_svm` function the trained model gets evaluated on val set. Finally the model and the feature scaler are saved as `pkl` files.  
+
+4. Sliding window - width, stride, scales  
+Perform Sliding Window technique to look at multiple parts of the image and predict weather there is a car present. Define window parameters (size, stride) in terms of `cells`. (Implementation <a href="https://www.pyimagesearch.com/2015/03/23/sliding-windows-for-object-detection-with-python-and-opencv/">details</a>)  
+
+5. Non-Maximum Suppression (NMS)  
+The algorithm reduces the number of predicted bounding boxes. Pick a box, calculate IoU for this box and the rest of the boxes, discard boxes with IoU > thresh. Repeat. (Great NMS tutorial is <a href="https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/">here</a>) As a result we have smaller amount of boxes which are stored in a queue to take into acount detections in the previous frames (3 frames).  
+
+6. Heat map - what it is, how to calculate  
+Calculate heat map to combine the detected bounding boxes into several regions which will represent final detections. First we create matrix of zeros with shape as input image. Then we increase the pixel intensity level by 1 at areas corresponding to detected boxes. For example, a pixel at some position of the heat map has value 5. It means that 5 boxes overlap at this position. At the end we binarize the obtained heat map by comparing its values with a threshold. Threshold value allows to choose how many boxes to consider for final detection. With `scipy.ndimage.measurements.label` function we obtain the segmented heat map (groups of boxes combined into several rectangular areas) and the number of segments. Each segment has different value, we use this knowledge in `draw_segment` function.  
+
+7. YOLOv3
     6.1 Overview - different scales, number of anchers, how predictions are translated to pixels
     6.2 BBoxes, IoU, NMS
