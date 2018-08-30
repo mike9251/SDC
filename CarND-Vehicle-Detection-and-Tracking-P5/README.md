@@ -57,6 +57,6 @@ The algorithm reduces the number of predicted bounding boxes. Pick a box, calcul
 6. Heat map - what it is, how to calculate  
 Calculate heat map to combine the detected bounding boxes into several regions which will represent final detections. First we create matrix of zeros with shape as input image. Then we increase the pixel intensity level by 1 at areas corresponding to detected boxes. For example, a pixel at some position of the heat map has value 5. It means that 5 boxes overlap at this position. At the end we binarize the obtained heat map by comparing its values with a threshold. Threshold value allows to choose how many boxes to consider for final detection. With `scipy.ndimage.measurements.label` function we obtain the segmented heat map (groups of boxes combined into several rectangular areas) and the number of segments. Each segment has different value, we use this knowledge in `draw_segment` function.  
 
-7. YOLOv3
-    6.1 Overview - different scales, number of anchers, how predictions are translated to pixels
+7. YOLOv3  
+    6.1 Overview - different scales, number of anchers, how predictions are translated to pixels  
     6.2 BBoxes, IoU, NMS
