@@ -5,9 +5,9 @@ import cv2
 import scipy
 import numpy as np
 import sys
-from skimage.transform import pyramid_gaussian
-from skimage import img_as_ubyte
-from sklearn.preprocessing import StandardScaler
+#from skimage.transform import pyramid_gaussian
+#from skimage import img_as_ubyte
+#from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 def normalize_image(img):
@@ -85,13 +85,10 @@ def NMS(boxes, overlapThresh):
 	y1 = boxes[:,1]
 	x2 = boxes[:,2]
 	y2 = boxes[:,3]
-
-	print("x1 shape = ", x1.shape)
  
 	# compute the area of the bounding boxes and sort the bounding
 	# boxes by the bottom-right y-coordinate of the bounding box
 	area = (x2 - x1 + 1) * (y2 - y1 + 1)
-	print("area shape = ", area.shape)
 	idxs = np.argsort(y2)
  
 	# keep looping while some indexes still remain in the indexes
@@ -187,7 +184,6 @@ def detect(img, scale, clf, feature_scaler):
 			y_pred = clf.predict(scaled_desc)
 
 			if(y_pred == 1):
-				print("y_pred = ", y_pred, " scale = ", scale)
 				x1 = np.int(xtl * scale)
 				y1 = np.int(ytl * scale)
 				winW = np.int(window * scale)
@@ -209,15 +205,13 @@ def pipeline(img, clf, feature_scaler, queue, verbose=False):
 	for scale in scales:
 		boxes += detect(img, scale, clf, feature_scaler)
 
-	print("Boxes before NMS: ",len(boxes))
-
 	boxes_NMS = []
 	for box in boxes:
 		boxes_NMS.append([box[0][0], box[0][1], box[1][0], box[1][1]])
 
 	# Suppress overlaping bboxes with IoU > 0.4 
 	boxes_clean = NMS(np.array(boxes_NMS), 0.4)
-	print("Boxes after NMS: ",len(boxes_clean))
+
 	# Push bboxes for current frame in the queue and calc threshold for heat map
 	if (len(queue) == 3):
 		queue.pop(0)
@@ -226,21 +220,13 @@ def pipeline(img, clf, feature_scaler, queue, verbose=False):
 		hm_thresh = len(queue) - 1
 
 	bboxes = np.concatenate(queue, axis=0)
-	print(bboxes.shape)
 
 	heatmap, heatmap_thresh = heat_map(img, bboxes, thresh=hm_thresh, verbose=False, nms=True)
 
 	# label connected components
 	segmented_heat_map, num_objects = scipy.ndimage.measurements.label(heatmap_thresh)
-	print("Num obj = ", num_objects)
-	print("Queue ", len(queue), "thresh = ", hm_thresh)
 	
 	result, final_boxes = draw_segments(result, segmented_heat_map, num_objects)
-
-	if verbose:
-	    cv2.imshow('heatmap', cv2.resize(img_heatmap, (480, 300)))
-	    cv2.imshow('img_segmented_heat_map', cv2.resize(img_segmented_heat_map, (480, 300)))
-	    cv2.waitKey(0)
 
 	return result
 
@@ -254,7 +240,7 @@ def process_video(video_file):
 	# To keep track of detected bboxes for previus frames
 	queue = []
 
-	out = cv2.VideoWriter('out6.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
+	#out = cv2.VideoWriter('out.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 25, (1280, 720))
 	clf, feature_scaler = load_model()
 
 	cv2.namedWindow("result", cv2.WINDOW_NORMAL)
@@ -269,7 +255,7 @@ def process_video(video_file):
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 
-		out.write(result)
+		#out.write(result)
 
 	cap.release()
 	cv2.destroyAllWindows()
@@ -279,10 +265,8 @@ process_video(filename)
 def train():
 	X_tr, X_val, y_train, y_val = load_data(bShuffle=True, cs='YCrCb')
 	desc_tr = get_descriptor_for_train(X_tr)
-	print(desc_tr.shape)
 
 	desc_val = get_descriptor_for_train(X_val)
-	print(desc_val.shape)
 
 	clf, feature_scaler = train_svm(desc_tr, y_train)
 
