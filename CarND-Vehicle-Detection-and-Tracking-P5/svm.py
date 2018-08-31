@@ -15,7 +15,6 @@ def train_svm(X_tr, y_tr, X_val=None, y_val=None):
 	clf.fit(X_tr_scaled, y_tr)
 
 	if(X_val and y_val):
-		#feature_scaler_val = StandardScaler().fit(X_val)
 		X_val_scaled = feature_scaler.transform(X_val)
 		acc = accuracy_score(y_val, clf.predict(X_val_scaled))
 		print('Validation accuracy: ', round(acc, 4))

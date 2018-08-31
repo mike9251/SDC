@@ -24,14 +24,6 @@ def get_spatial_bin_feature(image, size=(16, 16)):
     return cv2.resize(image, size).ravel()
 
 def get_hog_features(image, size=(32, 32), Verbose=False, feature_vector=False):
-    #print("HOG: ", image.shape)
-    #cv2.imshow("hist", image)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    #if(len(image.shape) == 3):
-    #    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    #if(size[0] != image.shape[0] or size[1] != image.shape[1]):
-    #    gray = cv2.resize(gray, size)
     
     # extract Histogram of Oriented Gradients from the image
     (H, hogImage) = feature.hog(image, orientations=9, pixels_per_cell=(8, 8),
@@ -82,9 +74,6 @@ def get_descriptor_for_train(images):
         img_desc.append(get_hog_features(img[:,:,1], size=(64, 64), Verbose=False, feature_vector=True))
         img_desc.append(get_hog_features(img[:,:,2], size=(64, 64), Verbose=False, feature_vector=True))
 
-        #if(i == 0):
-        #	print("Shapes:\nHist = ", img_desc[0].shape, "\nSpatial = ", img_desc[1].shape, "\nHog1 = ", img_desc[2].shape, "\nHog2 = ", img_desc[3].shape, "\nHog3 = ", img_desc[4].shape)
-        
         descriptors.append(np.concatenate(img_desc))
     
     return np.array(descriptors)
